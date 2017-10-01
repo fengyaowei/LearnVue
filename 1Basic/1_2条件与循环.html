@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>1_2条件与循环</title>
+    <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+</head>
+<body>
+<div id="msg3">
+    <!--v-if指令不接受属性参数-->
+    <p v-if="isHidden">测试v-if,根据条件【显示或隐藏】dom-p</p>
+</div>
+
+<div id="msg4">
+    <ol>
+        <!--作为属性用变量名，作为文本用{{变量名}}-->
+        <li v-for="item in items">
+            {{item.name}}
+        </li>
+    </ol>
+</div>
+
+<script>
+    /*script放在加载DOM之后*/
+    var app3 = new Vue({
+        el: '#msg3', // 操作对象
+        data: {
+            isHidden: true // false // data是一个JSON结构, isHidden是声明的变量
+        }
+    });
+
+    /*添加items使用数组语法push，app4.items.push({name:'cat mao'})，app4.items省略了data结构*/
+    var app4 = new Vue({
+        el: '#msg4', // 操作对象
+        data: {      // data是一个JSON结构, items一个数组结构
+            items:[
+                {name:'dog wang'},
+                {name:'chick lee'},
+                {name:'pig zhu'}
+            ]
+        }
+    });
+
+</script>
+</body>
+</html>

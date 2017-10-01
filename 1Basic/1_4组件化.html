@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>1_4组件化</title>
+    <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+</head>
+<body>
+<div id="msg7">
+    <ol>
+        <!--使用新增元素items, v-for=使用`=`, v-bind=使用`:`-->
+        <items v-for="item in lists" v-bind:interface="item" v-bind:key="item.id">
+        </items>
+    </ol>
+</div>
+<script>
+    <!--组件的构建，在于架构，通用的组件便于重用-->
+    Vue.component('items',{  // 自定了组件名 items, 相当于新增了html元素
+        props:['interface'], // 组件开发了自定义接口 interface
+        template:'<li>{{interface.text}}</li>' // 利用开放接口，完成数据交互，文本用{{开放接口变量}}
+    })
+
+    var app7= new Vue({
+        el:'#msg7',
+        data:{
+            lists:[  // lists数组，为了区别items
+                {id:0,text:'mao cat'},
+                {id:1,text:'zhu ping'},
+                {id:2,text:'lee ox'},
+                {id:3,text:'wang dog'}
+            ]
+        }
+    })
+</script>
+</body>
+</html>

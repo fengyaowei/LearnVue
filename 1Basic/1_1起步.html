@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>1_1起步</title>
+    <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+</head>
+<body>
+<div id="msg1">
+    <!--作为元素的文本使用时用{{变量名}}-->
+    <p>{{ message }}</p>
+</div>
+
+<div id="msg2">
+    <!--v-bind 指令接受属性title参数， 动态绑定，作为元素属性使用时直接使用变量名，可以缩写成:title-->
+    <span v-bind:title="message">
+        v-bind指令绑定span的title属性=app2.message
+    </span>
+
+    <!--v-html 绑定原始的html，非string，慎用！-->
+    <span v-html="rawHTML">
+
+    </span>
+</div>
+
+<a href="https://cn.vuejs.org/images/lifecycle.png">查看Vue生命周期</a>
+1.init->[检测el, template, 编译compile]->2.mount->3.update->4.destory
+<script>
+    /*script放在加载DOM之后
+    * 每一个应用都是一个new Vue()*/
+    var app = new Vue({
+        el: '#msg1', // 操作对象
+        data: {
+            message: 'Hello Vue!' // data是一个JSON结构, message是声明的变量
+        }
+    });
+
+    var app2 = new Vue({
+        el: '#msg2', // 操作对象
+        data: {      // 只有data内声明的变量，才能产生重新渲染的效果
+            message: 'Hello, 我的值绑定了span\'s title属性!', // data是一个JSON结构, message是声明的变量
+            rawHTML: '<DIV>替换了span</DIV>'
+        }
+    });
+</script>
+</body>
+</html>
