@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>1_6条件渲染</title>
+    <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+    <style>
+        .default-class{
+            font-size: 18px;
+        }
+        .active{
+            font-style: italic;
+        }
+        .text-danger{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<!--根据data内属性，动态渲染-->
+<div id="msg9" class="default-class" v-bind:class="computedStyle">
+    <h1 v-if="isActive && hasError">active && Error</h1>
+    <h1 v-else-if="isActive && !hasError">active && !Error</h1>
+    <h1 v-else-if="!isActive && hasError">!active && Error</h1>
+    <h1 v-else-if="!isActive && !hasError">!active && !Error</h1>
+    <h1 v-else>不可能</h1>
+
+    <!--使用key, 重新渲染 input输入框
+        支持template语法，可以替换div
+        v-show VS v-if 功能相同，区别点，v-if 按需每次渲染，v-show 按需渲染一次。根据实际情况选择语法。
+    -->
+     <template v-if="login==='mobile'">
+         <label>手机号</label>
+         <input placeholder="输入手机号" key="mobile">
+     </template >
+     <template v-else-if="login==='username'">
+         <label>用户名</label>
+         <input placeholder="输入用户名" key="username">
+     </template>
+     <template v-else>
+         <label>邮箱</label>
+         <input placeholder="输入邮箱"  key="email">
+     </template>
+    <button v-on:click="changeLogin">切换</button>
+ </div>
+
+
+ <script>
+     var app9= new Vue({
+         el:'#msg9',
+         data:{
+             isActive: true,
+             hasError: true,
+             login:''
+         },
+         methods:{
+             changeLogin:function () {
+                 if(this.login === ''){
+                     this.login='mobile'
+                 }else if(this.login === 'mobile'){
+                     this.login='username'
+                 }else if(this.login === 'username'){
+                     this.login='email'
+                 }else if(this.login === 'email'){
+                     this.login='mobile'
+                 }
+             }
+         },
+         computed:{
+             computedStyle:function () {
+                 return{
+                     active: this.isActive && !this.hasError,
+                     'text-danger':this.hasError
+                 }
+             }
+         }
+     })
+ </script>
+ </body>
+ </html>

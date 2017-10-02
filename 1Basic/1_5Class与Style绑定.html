@@ -4,16 +4,70 @@
     <meta charset="UTF-8">
     <title>1_5Class与Style绑定</title>
     <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+    <style>
+        .default-class{
+            font-size: 18px;
+        }
+        .active{
+            font-style: italic;
+        }
+        .text-danger{
+            color: red;
+        }
+    </style>
 </head>
 <body>
-<div id="msg8">
-
+<!--元素class属性可以和动态的属性共存。class='default-class active text-danger'-->
+<div id="msg8" class="default-class" v-bind:class="{active: isActive, 'text-danger': hasError}">
+default-class or active or text-danger
 </div>
-<script>
 
+<div id="msg8-1" class="default-class" v-bind:class="dataStyle">
+    default-class or active // dataStyle
+</div>
+
+<div id="msg8-2" class="default-class" v-bind:class="computedStyle">
+    default-class or text-danger // computedStyle
+</div>
+
+<script>
+    // 绑定方式一
     var app8= new Vue({
         el:'#msg8',
         data:{
+            isActive: true, // 直接绑定，只能通过computed or methods 单独写方法修改 true or false, 个人不建议。
+            hasError: true
+        }
+    })
+
+    // 绑定方式二
+    var app8_1= new Vue({
+        el:'#msg8-1',
+        data:{
+            // 直接绑定固定的css类名，可以使用一个对象处理, v-bind:class="dataStyle"，固定样式可以使用这样。
+            dataStyle:{
+                active:true,
+                'text-danger':false  // 中间有中杠的变量名，需要使用单引号
+            }
+        }
+    })
+
+    // 绑定方式三，最强大，利用data内变量名 && computed function 动态渲染。在以后开发中，会经常使用此组合。
+    var app8_2= new Vue({
+        el:'#msg8-2',
+        data:{
+            isActive: true,
+            hasError: true
+        },
+        // 变更data内属性值，会重新渲染样式。不过复杂样式，推荐使用计算属性 v-bind:class="computedStyle"。
+        // 个人建议使用计算属性 computedStyle，切分更清晰。
+        computed:{
+            computedStyle:function () {
+                return{
+                    active: this.isActive && !this.hasError, // 组合使用data内变量名，动态使用CSS内已经定义的类名。
+                    'text-danger':this.hasError
+                }
+            }
         }
     })
 </script>

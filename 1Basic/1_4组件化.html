@@ -4,12 +4,28 @@
     <meta charset="UTF-8">
     <title>1_4组件化</title>
     <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+    <style>
+        .default-class{
+            font-size: 18px;
+        }
+
+        .append{
+            color: red;;
+         }
+
+        .default-class2{
+            color: green;
+        }
+    </style>
 </head>
 <body>
 <div id="msg7">
     <ol>
-        <!--使用新增元素items, v-for=使用`=`, v-bind=使用`:`-->
-        <items v-for="item in lists" v-bind:interface="item" v-bind:key="item.id">
+        <!--使用新增元素items, v-for=使用`=`, v-bind=使用`:`,
+        追加class style .append, 最后渲染class="default-class append"，
+        key: 防止元素被复用，每次都渲染。
+        -->
+        <items v-for="item in lists" v-bind:interface="item" v-bind:key="item.id" class="append">
         </items>
     </ol>
 </div>
@@ -17,7 +33,11 @@
     <!--组件的构建，在于架构，通用的组件便于重用-->
     Vue.component('items',{  // 自定了组件名 items, 相当于新增了html元素
         props:['interface'], // 组件开发了自定义接口 interface
-        template:'<li>{{interface.text}}</li>' // 利用开放接口，完成数据交互，文本用{{开放接口变量}}
+        // 定义默认的class style .default-class
+        // 使用开放接口，完成数据交互，文本用{{开放接口变量}}
+        // 使用条件动态渲染样式 ===,!=
+        template:'<li v-if="interface.id%2===0" class="default-class">{{interface.text}}</li>' +
+        '<li v-else-if="interface.id%2!=0" class="default-class2">{{interface.text}}</li>'
     })
 
     var app7= new Vue({
