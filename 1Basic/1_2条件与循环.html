@@ -13,9 +13,48 @@
 
 <div id="msg4">
     <ol>
-        <!--作为属性用变量名，作为文本用{{变量名}}-->
-        <li v-for="item in items">
+        1.数组式循环
+        <!--作为属性用变量名，作为文本用{{变量名}}, of可以换成in, 设置key(重要！！！)-->
+        <li v-for="item of items" :key="item.name">
             {{item.name}}
+        </li>
+
+        1_1.数组【索引】式循环
+        <!--可以访问app4.data内的属性，还可以指定下标，语法(item,idx), 设置key(重要！！！)-->
+        <li v-for="(item,idx) in items" :key="item.name">
+            {{parentMsg}}-{{idx}}-{{item.name}}
+        </li>
+
+        1_2.过滤数组
+        <li>{{filter_items}}</li>
+
+        1_3.整数范围
+        <li v-for="n in 10" :key="n">{{n}}</li>
+
+        1_4.v-for内v-if显示isCompleted=false
+        <!--item中缺失isCompleted，按false处理-->
+        <li v-for="item in items" :key="item.name" v-if="!item.isCompleted">
+            {{item}}
+        </li>
+        1_5.v-for外v-if控制循环
+        <!--v-for平级使用时优先级高于v-if, 只有把它提在父级。items有值才循环，否则显示其他。-->
+        <ul v-if="items.length">
+            <li v-for="item in items" :key="item.name">
+                {{item}}
+            </li>
+        </ul>
+        <p v-else>数组items无值</p>
+        <br>
+        2.对象式循环
+        <!--个人建议，直接用数组省心, 设置key(重要！！！)-->
+        <li v-for="value in administrator" :key="value">
+            {{value}}
+        </li>
+
+        2.1对象【[Key, [idx]]】式循环
+        <!--[]代表可选，个人建议，直接用数组省心, 设置key(重要！！！)-->
+        <li v-for="(value,key,idx) in administrator" :key="idx">
+            {{parentMsg}}-{{idx}}-{{key}}--{{value}}
         </li>
     </ol>
 </div>
@@ -33,11 +72,31 @@
     var app4 = new Vue({
         el: '#msg4', // 操作对象
         data: {      // data是一个JSON结构, items一个数组结构
+            parentMsg:'Parent',
+            // 更新数组重新渲染[push,pop,shift,unshift,splice,sort,reverse]
+            // 覆盖数组选择渲染[filter,concat,slice]
+            // 重要！！！, 1.利用索引修改数组，不触发更新  app4.items[0] = 'dog zhu' fixed by app4.items.splice(0, 1, 'dog zhu')
+            // or  Vue.set(app4.items,0,'dog zhu')
+            // 重要！！！, 2.直接修改数组长度，不触发更新  app4.items.length = 4     fixed by app4.items.splice(4)
             items:[
-                {name:'dog wang'},
-                {name:'chick lee'},
+                {name:'dog wang', isCompleted:true},
+                {name:'chick lee', isCompleted:false}, //isCompleted 配合v-if
                 {name:'pig zhu'}
-            ]
+            ],
+            // 循环一个对象。动态添加属性 Vue.set(administrator, newKey, newValue). e.g. Vue.set(administrator, ID, 123)。
+            // 只用这样，才能动态渲染。
+            administrator:{
+                username:'feng, yaowei',
+                password:'md5'
+            }
+        },
+        computed:{
+            // 操作数组方法如上
+            filter_items:function () {
+                return  this.items.filter(function (item) {
+                    return  item.name.match(/dog/)  // 获取过滤值，当然也可以在methods内写方法。
+                })
+            }
         }
     });
 
