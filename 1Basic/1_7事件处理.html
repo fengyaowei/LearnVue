@@ -2,7 +2,7 @@
 <html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>1_7列表渲染</title>
+    <title>1_7事件处理</title>
     <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
     <style>
         .default-class{
@@ -18,13 +18,20 @@
 </head>
 <body>
 <div id="msg9">
-
+    <li v-for="item in items">
+        {{ item.message }}
+    </li>
 </div>
 <script>
     var app10= new Vue({
         el:'#msg9',
         data:{
-
+            parentMsg:'Parent',
+            items:[
+                {message:'pig zhu'},
+                {message:'chick Lee'},
+                {message:'cat mao'}
+            ]
         },
         methods:{
 
