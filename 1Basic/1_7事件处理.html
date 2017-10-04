@@ -28,7 +28,7 @@
     <span>{{result}}</span>
 
     <div :class="dataStyle">2.事件修饰符</div>
-    <!--事件修饰符 5个常用 .stop, .prevent, .capture, .self, .once-->
+    <!--【键盘|鼠标】事件修饰符 5个常用 .stop, .prevent, .capture, .self, .once-->
     <a @click.stop="say('1.阻止冒泡',$event)">1.阻止冒泡</a>
     <a @click.stop.prevent="say('2.阻止冒泡&&重载页面',$event)">2.阻止冒泡&&重载页面</a>
     <a @click.capture="say('3.侦听事件',$event)">3.侦听事件</a>
