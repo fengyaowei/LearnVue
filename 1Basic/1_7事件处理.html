@@ -5,36 +5,81 @@
     <title>1_7事件处理</title>
     <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
     <style>
-        .default-class{
-            font-size: 18px;
-        }
-        .active{
-            font-style: italic;
-        }
         .text-danger{
             color: red;
         }
     </style>
 </head>
 <body>
-<div id="msg9">
-    <li v-for="item in items">
-        {{ item.message }}
-    </li>
+<div :class="dataStyle">原生态的事件都可以使用。@事件名[click|keyx|onmousex|....]=''</div>
+<!--1_3谈及了一些事件处理，本节学习高阶事件处理-->
+<div id="msg10">
+    <div :class="dataStyle">1.普通事件处理</div>
+    <!--data内变量简单处理，理解为一段简单的js代码-->
+    <button @click="counter++">+1</button>
+    <span>{{counter}}</span>
+
+    <!--虽然greet有个参数，默认可以不传-->
+    <button @click="greet">greet</button>
+    <span>{{result}}</span>
+
+    <!--say明确了事件参数时，不能加单引号，必须是$event-->
+    <button @click="say('happy mid-autumn festival',$event)">say</button>
+    <span>{{result}}</span>
+
+    <div :class="dataStyle">2.事件修饰符</div>
+    <!--事件修饰符 5个常用 .stop, .prevent, .capture, .self, .once-->
+    <a @click.stop="say('1.阻止冒泡',$event)">1.阻止冒泡</a>
+    <a @click.stop.prevent="say('2.阻止冒泡&&重载页面',$event)">2.阻止冒泡&&重载页面</a>
+    <a @click.capture="say('3.侦听事件',$event)">3.侦听事件</a>
+    <a @click.self="say('4.本元素触发事件，非子元素',$event)">4.本元素触发事件，非子元素</a>
+    <a @click.once="say('5.页加载后只触发一次',$event)">5.页加载后只触发一次</a>
+
+    <!--form 一般情况下使用prevent就够了，-->
+    <form @submit.prevent="say('6.阻止重载页面1',$event)">6.阻止重载页面1</form>
+    <form @submit.prevent>6_1.阻止重载页面2</form>
+
+    <div :class="dataStyle">3.键盘修饰符</div>
+    <!--键盘修饰符 keyup.x(任意键号)，常用别名 13=enter, tab, delete, esc, space, up, down,
+     left, right, ctrl, alt, shift, meta-->
+    <!--全局可修改： Vue.config.keyCodes.f1=112 一般没必要使用此功能-->
+    <input @keyup.alt.67="greet"> <!--纯键盘alt+c使用-->
+    <div @click.alt="greet">click+alt+greet</div> <!--鼠标单击&键盘alt共同使用-->
+
+    <div :class="dataStyle">4.鼠标按钮修饰符</div>
+    <!--left=(event.button=0), right=(event.button=2), middle=(event.button=1)-->
+    <div @mousewheel="greet">滚动触发</div><!--滚动触发-->
 </div>
 <script>
     var app10= new Vue({
-        el:'#msg9',
+        el:'#msg10',
         data:{
             parentMsg:'Parent',
+            counter:0,
             items:[
                 {message:'pig zhu'},
                 {message:'chick Lee'},
                 {message:'cat mao'}
-            ]
+            ],
+            result:'',
+            dataStyle:{
+                'text-danger':true
+            }
         },
         methods:{
-
+            greet:function (event) {  // event 原生dom事件, 在其他Vue对象中调用: app10.greet().此处也可以用计算属性。
+                this.result = 'Hello '+ this.items[0].message+'!'
+                if(event){
+                    this.result += event.target.tagName
+                }
+            },
+            say:function (message, event) { // 方法内默认可以获取触发的event，此处event参数可以省略。
+                this.result = message
+                if(event){
+                    this.result += event.target.tagName
+                    event.preventDefault() // 阻止表单提交。 注意！ 此部分功能一般利用事件修饰符来完成，为的是方法聚焦业务逻辑。
+                }
+            }
         },
         computed:{
 
