@@ -4,11 +4,61 @@
     <meta charset="UTF-8">
     <title>1_8表单输入绑定</title>
     <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+    <style>
+        .text-danger{
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <div id="msg11">
-    <!--作为元素的文本使用时用{{变量名}}-->
-    <p>{{ message }}</p>
+    表单输入：input type=[文本框|checkbox|radio]; textarea; select option[disabled| multiple]
+    v-model=>等价于<=watch:{var:function(){....}
+
+    <div :class="dataStyle">1.单行&多行</div>
+    <div>
+        <!--默认default value，不是fengyaowei, 其他html默认值处理原则和此一样。-->
+        <input v-model="message" placeholder="请输入信息" value="fengyaowei">
+        <p>信息： {{ message }}</p>
+    </div>
+
+    <div>
+        <textarea v-model="message" placeholder="请输入多行信息" value="fengyaowei"><!--不可使用{{message}}--></textarea>
+        <p>多行信息： {{ message }}</p>
+    </div>
+
+    <div :class="dataStyle">2.单项或多选项</div>
+    <!--同意与否-->
+    <input type="checkbox" id="checkbox1" v-model="checkbox">
+    <label for="checkbox1">{{isAgree}}</label>
+
+    <!--循环初始化值，勾选多个值-->
+    <div v-for="check in initChecks" :key="check.id">
+        <input type="checkbox" :id="check.id" :value="check.text" v-model="mulitiChecks">
+        <label :for="check.id">{{check.text}}</label>
+    </div>
+    <span>多个勾选：{{mulitiChecks}}</span>
+
+
+    <div :class="dataStyle">3.一个单选</div>
+    <div v-for="r in initRadio" :key="r.id">
+        <input type="radio" :id="r.id" :value="r.text" v-model="radiobox">
+        <label :for="r.id">{{r.text}}</label>
+    </div>
+    <span>一个单选：{{radiobox}}</span>
+
+
+    <div :class="dataStyle">4.下拉</div>
+    <select v-model="selected"> <!--multiple 下拉多选-->
+        <option disabled value="">请选择</option>
+        <option v-for="option in options" :value="option.value">{{option.text}}</option>
+    </select>
+    <span>一个单选：{{selected}}</span>
+
+    <div :class="dataStyle">5.v-model.[lazy|number|trim]</div>
+    <input v-model.lazy="message" ><!--非实时更新-->
+    <input v-model.number="message" type="number"><!--字段要求是数字-->
+    <input v-model.trim="message" ><!--去除空-->
 </div>
 
 <script>
@@ -17,7 +67,40 @@
     var app11 = new Vue({
         el: '#msg11', // 操作对象
         data: {
-            message: 'Hello Vue!' // data是一个JSON结构, message是声明的变量
+            message: 'default value', // data是一个JSON结构, message是声明的变量
+            // 多选一组3项
+            checkbox:false,   // 针对一个勾选 如：同意vs不同意
+            mulitiChecks:[],  // 针对多个勾选
+            initChecks:[
+                {id:0,text:'pig zhu'},
+                {id:1,text:'chick lee'},
+                {id:2,text:'cat mao'},
+                {id:3,text:'fish yu'},
+            ],
+            // 单选一组2项
+            radiobox:false,    // 针对一个单选
+            initRadio:[
+                {id:0,text:'pig zhu'},
+                {id:1,text:'chick lee'},
+                {id:2,text:'cat mao'},
+                {id:3,text:'fish yu'},
+            ],
+            // 下拉选项一组2项
+            options:[
+                {value:'pig', text:'zhu'},
+                {value:'chick', text:'lee'},
+                {value:'cat', text:'mao'},
+                {value:'fish', text:'yu'},
+            ],
+            selected:'', // 若是多选，设为[]
+            dataStyle:{
+                'text-danger':true
+            }
+        },
+        computed:{
+            isAgree:function () {
+                return this.checkbox?'同意':'不同意'
+            }
         }
     });
 
