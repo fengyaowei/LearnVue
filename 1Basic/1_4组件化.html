@@ -21,23 +21,82 @@
 <body>
 <div id="msg7">
     <ol>
-        <!--使用新增元素items, v-for=使用`=`, v-bind:使用`:`,
+        <!--使用新增元素items, v-for=使用`=`, v-bind:使用`:`绑定props-interface,
         追加class style .append, 最后渲染class="default-class append"，
         key: 防止元素被复用，每次都渲染。
         -->
-        <items v-for="item in lists" v-bind:interface="item" v-bind:key="item.id" class="append">
+        <items v-for="item in lists" v-bind:interface="item" v-bind:key="item.id" class="append"
+        :a="item.text" :b="item.id"
+        >
         </items>
+
+        <!--非全局，其他页面不能使用，只能msg7这个元素才能使用-->
+        <no-global-compoent></no-global-compoent>
+
+        Vue内关键字is的使用场景：当只有嵌套、依赖其他元素才能使用的标签被组件化替换时。ul,ol,table,select,option。
+        <table>
+            <tr is="table-tr-td"></tr><!--正确的嵌套在table内-->
+            <table-tr-td>dd</table-tr-td><!--不会嵌套在table内，错误的写法-->
+        </table>
     </ol>
 </div>
+
 <script>
     <!--组件的构建，在于架构，通用的组件便于重用-->
-    Vue.component('items',{  // 自定了组件名 items, 相当于新增了html元素
-        props:['interface'], // 组件开发了自定义接口 interface
+    Vue.component('items', {  // 自定了组件名 items, 全局注册, 相当于新增了html元素
+        // 组件开发了自定义接口 interface, 命名使用中杠命名法 e.g. a-b
+        // 提前预知的属性用props，不能预知的属性作为根属性直接存在。
+        // <items class='non-props-style' new-prop='第三方插件属性'></items>
+        props: {
+            // 注意！！！props在app7创建之前使用default, validator, 所以无法使用data, computed, methods内任何属性。
+            interface:null,     // 定义了可以接受任何类型的参数
+            a: {                // 定义了a必须绑定的字符串
+                type: String,
+                required: true
+            },
+            b:{                // 定义了b必须绑定的数字，默认值0
+                type: Number,
+                required: true,
+                default: 0
+            },
+            c:{                // 定义了c对象，默认值{name: 'feng,yaowei'}
+                type:Object,
+                default:function () {
+                    return  {name: 'feng,yaowei'}
+                }
+            },
+            d:{                // 定义了d数组，默认值[]
+                type:Array,
+                default:[]
+            },
+            e:{                // 定义了e的验证函数
+                validator:function (value) {
+                    return value===0
+                }
+            },
+            f:{                // 定义了f绑定方法
+                type:Function
+            }
+        },
         // 定义默认的class style .default-class
         // 使用开放接口，完成数据交互，文本用{{开放接口变量}}
         // 使用条件动态渲染样式 ===,!=
-        template:'<li v-if="interface.id%2===0" class="default-class">{{interface.text}}</li>' +
-        '<li v-else-if="interface.id%2!=0" class="default-class2">{{interface.text}}</li>'
+        //
+        template: '<li v-if="interface.id%2===0" class="default-class">{{interface.text}}' +
+        '<button @click="alert(interface.id)">{{interface.text}}</button></li>' +
+        '<li v-else-if="interface.id%2!=0" class="default-class2">{{interface.text}}+" "+{{a}}+" "+{{b}}</li>',
+
+        // 必须返回一个函数，
+        data: function () {
+            return this.interface   // 一定要用this
+        },
+        // 再次处理interface，当作局部对象来使用。 或者用上面的data来处理。 只有这两种方法来更新interface。
+        // 重要！！！，props内时[],{}对象，即使使用了上面两种方法，依然会修改父状态的。慎用！！！。
+        computed: {
+            tolower:function () {
+                return this.interface.text.tolower()   // 一定要用this
+            }
+        }
     })
 
     var app7= new Vue({
@@ -49,6 +108,14 @@
                 {id:2,text:'lee ox'},
                 {id:3,text:'wang dog'}
             ]
+        },
+        components:{  // vue 里的每个对象{}, 都可以用 var obj={}抽象, 此处等价 components:obj
+            'no-global-compoent':{
+                template:'<div>非全局注册组件</div>'
+            },
+            'table-tr-td':{
+                template:'<tr><td>一行一列</td></tr>'
+            }
         }
     })
 </script>
