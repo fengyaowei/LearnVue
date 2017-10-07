@@ -19,7 +19,18 @@
 
 <div id="msg6">
     <p>{{message}}</p>
-    <!--v-model，双向绑定message,所见即所得-->
+    <!--v-model，双向绑定message,所见即所得，等价于:value="message" @input="message=$event.target.value"，
+        组件化内，为了实现自定义的v-model功能，需要自定义实现:html元素属性=prop，@html元素事件=函数
+        e.g. input     :value   = message    @input  = func
+             checkbox  :checked = message    @change = func
+             Vue.compontent('my-checkbox',{
+                model:{  // 开放重写的2个属性
+                    prop:'checked',
+                    event:'change'
+                }
+             })
+             不同类型实现的属性不同，相同点是都需要实现。
+    -->
     <input v-model="message">
 
     <!--watch适用于耗时操作-->
