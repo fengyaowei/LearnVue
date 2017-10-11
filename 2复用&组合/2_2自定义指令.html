@@ -27,7 +27,7 @@
 </div>
 <script>
 
-    // 1.全局定义指令yepcoin-focus
+    // 1.全局定义指令yaowei
     Vue.directive('yaowei',{
         bind:function (el,binding,vnode,oldVnode){
             // 一次初始化
@@ -42,7 +42,7 @@
         },
         inserted:function (el) { // 钩子函数
             //绑定元素插入dom时执行
-            el.value='使用了全局自定义的yepcoin-focus'
+            el.value='使用了全局自定义的yaowei'
             el.focus()
         },
         update:function (el){
@@ -68,9 +68,9 @@
         components:{
         },
         directives:{
-            'yepcoin-focus':{
+            'yaowei':{
                 inserted:function (el) {
-                    el.value='使用了局部自定义的yepcoin-focus'
+                    el.value='使用了局部自定义的yaowei'
                     el.focus()
                 }
             }
