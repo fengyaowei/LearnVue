@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>2_2自定义指令</title>
+    <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+    <style>
+        .default-class{
+            font-size: 18px;
+        }
+
+        .append{
+            color: red;;
+        }
+
+        .default-class2{
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<div id="msg2" v-yaowei:foo.a.b="message">
+    <!--使用自定义指令-->
+    <input v-yaowei>
+
+    <div ></div>
+</div>
+<script>
+
+    // 1.全局定义指令yepcoin-focus
+    Vue.directive('yaowei',{
+        bind:function (el,binding,vnode,oldVnode){
+            // 一次初始化
+            var s = JSON.stringify
+            el.innerHTML=
+                'name: '+s(binding.name)+'<br>'+
+                'value: '+s(binding.value)+'<br>'+  //也许是个对象{}
+                'expression: '+s(binding.expression)+'<br>'+
+                'argument: '+s(binding.arg)+'<br>'+
+                'modifiers: '+s(binding.modifiers)+'<br>'+
+                'vnode keys: '+Object.keys(vnode).join(',')+'<br>'
+        },
+        inserted:function (el) { // 钩子函数
+            //绑定元素插入dom时执行
+            el.value='使用了全局自定义的yepcoin-focus'
+            el.focus()
+        },
+        update:function (el){
+            //
+        },
+        componentUpdated:function (el){
+
+        },
+        unbind:function (el){
+            // 解绑
+        }
+    })
+
+
+    var app2 = new Vue({
+        el:'#msg2',
+        data:{
+            message:'app2\'s meesage'
+        },
+        methods:{
+
+        },
+        components:{
+        },
+        directives:{
+            'yepcoin-focus':{
+                inserted:function (el) {
+                    el.value='使用了局部自定义的yepcoin-focus'
+                    el.focus()
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>
