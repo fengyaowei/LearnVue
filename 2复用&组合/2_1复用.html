@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>2_1复用</title>
+    <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+    <style>
+        .default-class{
+            font-size: 18px;
+        }
+
+        .append{
+            color: red;;
+        }
+
+        .default-class2{
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<div id="msg1">
+    <button @click="fired">触发app1.fired</button>
+    <button @click="hello">触发app1.hello,替换组合对象hello</button>
+    <!--复用对象的属性被替换-->
+    <mix-cpt></mix-cpt>
+    <!--复用对象的属性没有被替换，且被继承了-->
+    <cpt2></cpt2>
+</div>
+
+<script>
+    <!--定义组件1-->
+    Vue.component('yepcoin-1',{})
+
+    <!--定义组件1-->
+    Vue.component('yepcoin-2',{})
+
+    // 定义一个复用对象
+    var mix={
+        // mix一旦被扩展到Vue后，new 扩展对象时触发此方法，e.g. var ext_mix = new extendVueUsingMix()
+        // 触发created
+        created:function () { // Vue定义的钩子函数，还有其他mounted....
+            this.hello();
+        },
+        mixins:[            // 按需引入其他复用对象
+            // 复用复复用，复用何其多
+        ],
+        methods:{
+            hello:function () {
+                alert("触发复用对象内方法")
+            }
+        },
+        components:{
+            'mix-cpt':{
+                template:'<div>复用对象components：mix-cpt</div>'
+            },
+            cpt2:{
+                template:'<div>复用对象components：mix-cpt2</div>'
+            }
+        },
+        directives:{
+
+        }
+    }
+
+    // 用关键字引入mixins扩展到Vue，也可在app1中引入mixins:[]，复用对象内部也可以再引入其他mixins:[]
+    // 不建议使用这种引入方式，推荐在app1或复用对象内引入 mixins:[....]
+    var extendVueUsingMix = Vue.extend({
+        mixins:[mix]
+    })
+    //var ext_mix = new extendVueUsingMix() // 触发created
+
+    var mix2={}
+
+    // ###2.全局复用，不建议用，暂时不写了。
+    // ###3.自定义属性及方法合并策略，使用默认配置就行了，暂时不写了。
+
+    var app1 = new Vue({
+        el:'#msg1',
+        created:function () {
+            alert("同名的钩子函数，后执行我")
+        },
+        mixins:[            // 按需引入其他复用对象
+            mix,mix2             // 引入mix复用对象，执行mix的created时，调用的hello变成了app1.hello。mix.hello存在，只是在此没找到。
+        ],
+        data:{
+
+        },
+        methods:{
+            hello:function () {   // 绑定hello时，只回选择这个，而不会选择复用对象内的hello
+                alert("app1内hello方法")
+            },
+            fired:function () {
+                this.hello()
+                //ext_mix.hello() // 任性的使用组合对象包含的属性及方法
+            }
+        },
+        components:{
+            'mix-cpt':{ //屏蔽了复用对象的属性，只是屏蔽了，在此找不到了，并非替换。
+                template:'<div>app1内components：mix-cpt</div>'
+            }
+        }
+    })
+</script>
+</body>
+</html>
